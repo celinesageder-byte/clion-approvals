@@ -1,0 +1,730 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>C-Lion · Content review — Daniel Wright, NavAIgate</title>
+<meta name="robots" content="noindex" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;500;700&family=Raleway:wght@300;400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --forest:#1B4332; --deep:#14321f; --growth:#2D6A4F; --mid:#52B788; --sage:#95B39C;
+    --ivory:#F3EEE7; --charcoal:#4A4A4A; --mist:#D9DDD8; --lightgreen:#C8E6C9;
+    --card:#ffffff; --ok:#2D6A4F; --ok-bg:#e6f0e9; --warn:#9c6b3f; --warn-bg:#f3ebe1;
+    --shadow:0 1px 2px rgba(20,50,31,.05), 0 12px 34px rgba(20,50,31,.08);
+    --font:"Comfortaa","Raleway",system-ui,-apple-system,Segoe UI,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--ivory); color:var(--charcoal); font-family:var(--font); font-size:15.5px; line-height:1.6; -webkit-font-smoothing:antialiased}
+  /* One centered reading column — nothing pinned left or right. */
+  .wrap{max-width:860px; margin:0 auto; padding:0 20px}
+  a{color:var(--growth)}
+  button:focus-visible, [tabindex]:focus-visible, a:focus-visible{outline:3px solid var(--mid); outline-offset:2px}
+
+  /* ---------- masthead (dark forest, like c-lion.ai) ---------- */
+  header.masthead{
+    background:
+      radial-gradient(130% 100% at 88% -10%, rgba(82,183,136,.22), transparent 55%),
+      linear-gradient(160deg,var(--forest),var(--deep));
+    color:var(--ivory); position:relative; overflow:hidden;
+  }
+  .masthead .wrap{padding:34px 20px 38px; position:relative; z-index:1}
+  .brandrow{display:flex; align-items:center; gap:13px; margin-bottom:26px}
+  .brandrow img{height:40px; width:auto; display:block}
+  .brandrow .wordmark{font-weight:700; font-size:20px; letter-spacing:.02em; color:var(--ivory)}
+  .brandrow .slogan{margin-left:auto; font-size:12.5px; letter-spacing:.16em; text-transform:uppercase; color:var(--mid); font-weight:500}
+  .eyebrow{font-size:12px; letter-spacing:.24em; text-transform:uppercase; color:var(--mid); font-weight:600; margin:0 0 12px}
+  h1.title{font-weight:700; font-size:clamp(26px,4.4vw,38px); line-height:1.12; letter-spacing:-.005em; margin:0 0 14px; text-wrap:balance; color:#fff}
+  h1.title .sub{display:block; font-weight:300; font-size:.62em; color:var(--sage); margin-top:6px; letter-spacing:.01em}
+  .lede{max-width:64ch; color:#dce7df; font-weight:300; font-size:16px; margin:0 0 20px}
+  .lede b{font-weight:500; color:#fff}
+  .howto{background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.16); border-radius:16px; padding:16px 18px; backdrop-filter:blur(4px)}
+  .howto b{font-weight:600; color:#fff}
+  .howto ol{margin:10px 0 0; padding-left:20px; color:#cfded4}
+  .howto li{margin:5px 0}
+  .howto li b{color:#fff; font-weight:500}
+  .metaline{display:flex; flex-wrap:wrap; gap:10px 26px; margin-top:20px; color:#bccfc2; font-size:13.5px; font-weight:300}
+  .metaline span b{color:#fff; font-weight:600}
+
+  /* ---------- sticky top bar: progress + jump-nav ---------- */
+  .statusbar{position:sticky; top:0; z-index:40; background:rgba(243,238,231,.96); backdrop-filter:blur(8px); border-bottom:1px solid var(--mist)}
+  .statusbar .wrap{padding:9px 20px 0}
+  .progressrow{display:flex; align-items:center; gap:14px}
+  .progressrow .count{font-size:13.5px; color:var(--charcoal); white-space:nowrap}
+  .progressrow .count b{color:var(--forest); font-weight:700}
+  .bar{flex:1 1 120px; height:8px; background:var(--mist); border-radius:999px; overflow:hidden; min-width:80px}
+  .bar>i{display:block; height:100%; width:0; background:linear-gradient(90deg,var(--forest),var(--mid)); transition:width .3s ease}
+  .jumpnav{display:flex; gap:8px; overflow-x:auto; padding:8px 0 9px; -webkit-overflow-scrolling:touch; scrollbar-width:none}
+  .jumpnav::-webkit-scrollbar{display:none}
+  .jumpnav a{flex:none; font-size:12.5px; font-weight:500; color:var(--forest); text-decoration:none; border:1px solid var(--mist); background:#fff; border-radius:999px; padding:5px 13px; letter-spacing:.02em; transition:background .15s,color .15s,border-color .15s}
+  .jumpnav a.active{background:var(--growth); border-color:var(--growth); color:#fff; font-weight:600}
+
+  /* ---------- assets card ---------- */
+  .assets{background:var(--card); border:1px solid var(--sage); border-radius:18px; box-shadow:var(--shadow); margin:26px 0 6px; padding:20px 22px; scroll-margin-top:110px}
+  .assets h2{font-weight:700; font-size:17px; color:var(--forest); margin:0 0 6px}
+  .assets p{margin:0 0 12px; font-weight:300; font-size:14.5px}
+  .assets .btnrow{display:flex; flex-wrap:wrap; gap:10px}
+
+  /* ---------- section divider ---------- */
+  .section-h{margin:42px 0 8px; display:flex; align-items:baseline; gap:14px; scroll-margin-top:110px}
+  .section-h h2{font-weight:700; font-size:19px; margin:0; color:var(--forest); letter-spacing:.01em}
+  .section-h .rule{flex:1; height:1px; background:var(--mist)}
+
+  /* ---------- card ---------- */
+  .card{background:var(--card); border:1px solid var(--mist); border-radius:18px; box-shadow:var(--shadow); margin:18px 0; overflow:hidden; scroll-margin-top:110px; transition:border-color .25s}
+  .card.is-approved{border-color:var(--ok)}
+  .card.is-changes{border-color:var(--warn)}
+  .card-head{display:flex; justify-content:space-between; gap:16px; padding:20px 22px 6px; flex-wrap:wrap}
+  .badges{display:flex; flex-wrap:wrap; gap:7px; align-items:center}
+  .badge{font-size:11.5px; font-weight:500; letter-spacing:.02em; padding:4px 11px; border-radius:999px; border:1px solid var(--mist); color:var(--charcoal); background:var(--ivory)}
+  .badge.date{color:var(--forest); border-color:var(--sage); font-weight:600}
+  .badge.plat{color:#fff; background:var(--growth); border-color:var(--growth)}
+  .pin{font-size:12px; font-weight:500; color:var(--growth)}
+  .hook{font-weight:700; font-size:clamp(17px,2.3vw,21px); line-height:1.3; margin:8px 22px 2px; text-wrap:balance; color:var(--forest)}
+  .card-body{padding:14px 22px 22px}
+  .opts-label{font-size:11.5px; letter-spacing:.16em; text-transform:uppercase; color:var(--growth); font-weight:600; margin:6px 0 12px}
+
+  /* ---------- image options (zoomable) ---------- */
+  .opts{display:grid; gap:14px}
+  .opts.three{grid-template-columns:repeat(3,1fr)}
+  .opt{border:2px solid var(--mist); border-radius:14px; overflow:hidden; background:var(--ivory); position:relative; transition:border-color .2s; display:flex; flex-direction:column}
+  .opt.sel{border-color:var(--growth)}
+  .zoomable{position:relative; width:100%; background:#eef2ec; cursor:zoom-in; overflow:hidden; padding:0; border:0; display:block}
+  .zoomable img{width:100%; height:100%; object-fit:cover; display:block; transition:transform .25s ease}
+  @media (hover:hover){ .zoomable:hover img{transform:scale(1.05)} .zoomable:hover .maglens{opacity:1} }
+  .ar-45 .zoomable{aspect-ratio:4/5}
+  .ar-11 .zoomable{aspect-ratio:1/1}
+  .ar-916 .zoomable{aspect-ratio:9/16}
+  .zoomable .tag{position:absolute; top:8px; left:8px; font-size:11px; font-weight:600; color:#fff; background:rgba(20,50,31,.66); padding:3px 9px; border-radius:999px; letter-spacing:.02em; pointer-events:none}
+  .maglens{position:absolute; right:8px; bottom:8px; width:30px; height:30px; border-radius:9px; background:rgba(20,50,31,.72); color:#fff; display:flex; align-items:center; justify-content:center; font-size:15px; opacity:.85; transition:opacity .2s; pointer-events:none}
+  .opt .pick{display:flex; align-items:center; justify-content:center; gap:7px; padding:10px; font-size:13px; font-weight:500; color:var(--charcoal); border-top:1px solid var(--mist); background:#fff; cursor:pointer; width:100%; border-left:0; border-right:0; border-bottom:0; font-family:inherit}
+  .opt.sel .pick{color:var(--growth); font-weight:600}
+  .opt .dot{width:15px; height:15px; border-radius:50%; border:2px solid var(--mist); flex:none}
+  .opt.sel .dot{border-color:var(--growth); background:var(--growth); box-shadow:inset 0 0 0 3px #fff}
+  .zoomhint{font-size:12px; color:var(--growth); font-weight:400; margin:10px 0 0}
+
+  /* ---------- single media (reel poster) ---------- */
+  .single{max-width:300px}
+
+  /* ---------- LinkedIn text post ---------- */
+  .textpost{border:1px solid var(--mist); border-radius:14px; background:var(--ivory); padding:18px 20px; white-space:pre-wrap; font-size:14.5px; font-weight:300; color:var(--charcoal)}
+  .textpost b{font-weight:600; color:var(--forest)}
+
+  /* ---------- quote block + rule note ---------- */
+  .quoteblock{border-left:3px solid var(--mid); background:var(--ivory); border-radius:0 14px 14px 0; padding:14px 18px; margin:0 0 14px}
+  .quoteblock .q{font-size:15.5px; font-weight:500; color:var(--forest); line-height:1.5; margin:0}
+  .quoteblock .src{display:block; margin-top:8px; font-size:12.5px; font-weight:300; color:var(--charcoal)}
+  .rulenote{display:flex; gap:9px; align-items:flex-start; background:var(--ok-bg); border:1px solid var(--sage); border-radius:12px; padding:10px 14px; margin-top:14px; font-size:12.5px; color:var(--forest); font-weight:400}
+  .rulenote .ic{flex:none; font-weight:700}
+
+  /* ---------- placeholder banner ---------- */
+  .placeholder-flag{display:inline-block; font-size:11px; font-weight:600; letter-spacing:.06em; text-transform:uppercase; color:var(--warn); background:var(--warn-bg); border:1px solid #e0cdb4; border-radius:999px; padding:3px 10px; margin:0 22px}
+
+  /* ---------- caption + controls ---------- */
+  .caption{margin-top:18px; border-top:1px dashed var(--mist); padding-top:14px}
+  .cap-lab{font-size:11.5px; letter-spacing:.16em; text-transform:uppercase; color:var(--growth); font-weight:600; margin-bottom:6px}
+  .cap-text{white-space:pre-wrap; color:var(--charcoal); font-size:14.5px; font-weight:300}
+  .cap-text .tags{color:var(--growth); font-weight:500}
+  .controls{margin-top:18px; display:flex; flex-wrap:wrap; gap:10px; align-items:center}
+  .seg{display:inline-flex; border:1px solid var(--mist); border-radius:999px; overflow:hidden}
+  .seg button{border:0; background:transparent; padding:9px 16px; font:inherit; font-weight:500; font-size:13.5px; cursor:pointer; color:var(--charcoal); transition:background .15s,color .15s}
+  .seg button+button{border-left:1px solid var(--mist)}
+  .seg button.on-ok{background:var(--ok-bg); color:var(--ok); font-weight:700}
+  .seg button.on-warn{background:var(--warn-bg); color:var(--warn); font-weight:700}
+  .commenttoggle{background:transparent; border:0; color:var(--growth); font:inherit; font-weight:500; font-size:13.5px; cursor:pointer; padding:9px 4px; text-decoration:underline; text-underline-offset:3px}
+  textarea{width:100%; margin-top:12px; border:1px solid var(--mist); border-radius:12px; padding:12px 14px; font:inherit; font-size:14.5px; font-weight:300; color:var(--charcoal); background:var(--ivory); resize:vertical; min-height:70px}
+  textarea:focus{outline:2px solid var(--mid); outline-offset:1px; background:#fff}
+  textarea.hidden{display:none}
+
+  .btn{border:0; border-radius:999px; padding:12px 22px; font:inherit; font-weight:600; font-size:14.5px; cursor:pointer; background:var(--growth); color:#fff; box-shadow:var(--shadow); transition:filter .15s,transform .1s; text-decoration:none; display:inline-block}
+  .btn:hover{filter:brightness(1.08)} .btn:active{transform:translateY(1px)}
+  .btn.ghost{background:#fff; color:var(--forest); border:1px solid var(--mist); box-shadow:none}
+
+  /* ---------- send footer ---------- */
+  footer.send{margin:46px 0 0; scroll-margin-top:110px}
+  .send-card{background:linear-gradient(160deg,var(--forest),var(--deep)); color:var(--ivory); border-radius:20px; box-shadow:var(--shadow); padding:30px 26px; text-align:center}
+  .send-card h2{font-weight:700; font-size:23px; margin:0 0 8px; color:#fff}
+  .send-card p{color:#cfded4; font-weight:300; margin:0 auto 20px; max-width:60ch}
+  .send-actions{display:flex; flex-wrap:wrap; gap:12px; justify-content:center}
+  .send-card .btn.ghost{background:rgba(255,255,255,.08); color:#fff; border-color:rgba(255,255,255,.28)}
+  .toast{margin-top:16px; font-size:14px; color:var(--mid); font-weight:500; opacity:0; transition:opacity .2s; min-height:1.4em}
+  .toast.show{opacity:1}
+  .receipt{margin-top:18px; text-align:left; background:rgba(255,255,255,.08); border:1px solid rgba(149,179,156,.5); border-radius:14px; padding:14px 18px; font-size:13.5px; color:#dce7df; font-weight:300}
+  .receipt b{color:#fff; font-weight:600}
+  .receipt[hidden]{display:none}
+  .colophon{margin:26px 0 60px; text-align:center}
+  .colophon .tag{font-weight:700; font-size:16px; color:var(--growth)}
+  .colophon .made{display:block; margin-top:8px; color:var(--charcoal); font-size:12.5px; font-weight:300}
+  .colophon img{height:30px; opacity:.9; margin-bottom:8px}
+
+  /* ---------- lightbox ---------- */
+  .lightbox{position:fixed; inset:0; z-index:100; background:rgba(10,24,15,.94); display:flex; flex-direction:column; align-items:center; justify-content:center; padding:14px}
+  .lightbox[hidden]{display:none}
+  .lb-stage{flex:1; width:100%; min-height:0; display:flex; align-items:center; justify-content:center}
+  .lb-stage img{max-width:100%; max-height:100%; object-fit:contain; border-radius:8px; box-shadow:0 20px 60px rgba(0,0,0,.5)}
+  .lb-meta{flex:none; color:#dce7df; font-size:13.5px; font-weight:300; text-align:center; padding:12px 8px 4px; max-width:70ch}
+  .lb-meta b{color:#fff; font-weight:600}
+  .lb-close{position:absolute; top:14px; right:14px; width:44px; height:44px; border-radius:50%; border:1px solid rgba(255,255,255,.3); background:rgba(255,255,255,.1); color:#fff; font-size:20px; cursor:pointer; font-family:inherit}
+  .lb-arrow{position:absolute; top:50%; transform:translateY(-50%); width:46px; height:46px; border-radius:50%; border:1px solid rgba(255,255,255,.3); background:rgba(255,255,255,.1); color:#fff; font-size:20px; cursor:pointer; font-family:inherit}
+  .lb-arrow:hover,.lb-close:hover{background:rgba(255,255,255,.22)}
+  .lb-prev{left:12px} .lb-next{right:12px}
+  .lb-arrow[hidden]{display:none}
+  .lb-choose{flex:none; margin:8px 0 4px}
+  .lb-choose[hidden]{display:none}
+
+  @media (max-width:700px){
+    .opts.three{grid-template-columns:repeat(2,1fr)}
+    .hook{margin-left:16px; margin-right:16px}
+    .card-head,.card-body{padding-left:16px; padding-right:16px}
+    .placeholder-flag{margin-left:16px}
+    .brandrow .slogan{display:none}
+    .lb-arrow{width:40px; height:40px}
+  }
+  @media (max-width:430px){ .opts.three{grid-template-columns:1fr} }
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="wrap">
+    <div class="brandrow">
+      <img src="https://c-lion.ai/cdn/shop/t/4/assets/clion-mark-cream.png" alt="C-Lion" onerror="this.style.display='none'" />
+      <span class="wordmark">C-Lion</span>
+      <span class="slogan">Grow Louder.</span>
+    </div>
+    <p class="eyebrow">Content review · Personal brand</p>
+    <h1 class="title">Daniel Wright — NavAIgate<span class="sub">Weekly content review</span></h1>
+    <p class="lede">This week's batch, ready for your review. <b>Tap any image to see it full-screen.</b> Where a post has options, pick the one you prefer — then approve or request changes per post, and send your feedback at the bottom. <b>Nothing publishes without your approval.</b></p>
+    <div class="howto">
+      <b>Three steps, two minutes</b>
+      <ol>
+        <li>Where a post has options, <b>pick your preferred version</b> (tap the image first to zoom).</li>
+        <li><b>Approve ✓</b> or <b>Request changes</b> on each post — add a comment if you want.</li>
+        <li>Hit <b>"Send feedback to C-Lion"</b> at the bottom. Done.</li>
+      </ol>
+    </div>
+    <div class="metaline">
+      <span>Platform: <b>Instagram + LinkedIn · weekly cycle</b></span>
+      <span><b id="metaCount">6</b> posts this week</span>
+      <span>Contact: <b>support@c-lion.ai</b></span>
+    </div>
+  </div>
+</header>
+
+<div class="statusbar">
+  <div class="wrap">
+    <div class="progressrow">
+      <div class="count"><b id="doneN">0</b> of <span id="totalN">0</span> reviewed</div>
+      <div class="bar"><i id="barfill"></i></div>
+    </div>
+    <nav class="jumpnav" id="jumpnav" aria-label="Sections">
+      <a href="#sec-assets">Your assets</a>
+      <a href="#sec-feed">Feed posts</a>
+      <a href="#sec-quotes">Quote cards &amp; stories</a>
+      <a href="#sec-send">Send feedback</a>
+    </nav>
+  </div>
+</div>
+
+<main class="wrap">
+
+  <section class="assets" id="sec-assets" aria-label="Your assets">
+    <h2>Your assets — Drive folder</h2>
+    <p>Upload access is fixed — drag &amp; drop works now. Images, video, PDF, fonts and zip files all work. If anything is blocked again, write to Celine directly at <a href="mailto:support@c-lion.ai">support@c-lion.ai</a>.</p>
+    <div class="btnrow">
+      <a class="btn" href="https://drive.google.com/drive/folders/1Lazrr-8PErS4MSTmAznt1c5ppEb3Z3lh" target="_blank" rel="noopener">Open your Drive folder ↗</a>
+    </div>
+  </section>
+
+  <div id="feed"></div>
+
+</main>
+
+<div class="wrap">
+<footer class="send" id="sec-send">
+  <div class="send-card">
+    <h2>Send feedback to C-Lion</h2>
+    <p>Your picks, decisions and comments get packaged into one plain-text summary. <b>Email it</b> opens your mail app with everything pre-filled — you just hit send. Or <b>copy the summary</b> and paste it wherever suits you (email, WhatsApp). Everything on this page survives a reload.</p>
+    <div class="send-actions">
+      <button class="btn ghost" id="sendMail" type="button">Email it ✉</button>
+      <button class="btn ghost" id="copyBtn" type="button">Copy summary</button>
+      <button class="btn ghost" id="resetBtn" type="button">Reset all</button>
+    </div>
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <div class="receipt" id="receipt" hidden></div>
+  </div>
+  <p class="colophon">
+    <img src="https://c-lion.ai/cdn/shop/t/4/assets/clion-mark-green.png" alt="C-Lion" onerror="this.style.display='none'" /><br>
+    <span class="tag">Join the pride. Grow Louder.</span>
+    <span class="made">Built by C-Lion · Growth System · for Daniel Wright — NavAIgate</span>
+  </p>
+</footer>
+</div>
+
+<!-- ================= LIGHTBOX ================= -->
+<div class="lightbox" id="lightbox" hidden role="dialog" aria-modal="true" aria-label="Image viewer">
+  <button class="lb-close" id="lbClose" type="button" aria-label="Close (Esc)">✕</button>
+  <button class="lb-arrow lb-prev" id="lbPrev" type="button" aria-label="Previous image">←</button>
+  <div class="lb-stage" id="lbStage"><img id="lbImg" src="" alt="" /></div>
+  <button class="lb-arrow lb-next" id="lbNext" type="button" aria-label="Next image">→</button>
+  <div class="lb-meta" id="lbMeta"></div>
+  <button class="btn lb-choose" id="lbChoose" type="button">Choose this option ✓</button>
+</div>
+
+<script>
+"use strict";
+const CLION_EMAIL = "support@c-lion.ai";
+const STORAGE_KEY = "daniel-wright-review";
+
+/* =====================================================================
+   PLACEHOLDER BATCH — CELINE: HOW TO SWAP IN THE REAL WEEK
+   =====================================================================
+   Every post below is a placeholder so Daniel's fixes are demonstrable.
+   To load the real batch:
+   1. Replace each object in POSTS with the real post. Fields:
+      - id           unique number (keep stable week to week if possible —
+                     localStorage state is keyed on it)
+      - section      "feed" or "quotes" (controls which section it renders in)
+      - format       badge text, e.g. "Portrait 4:5", "Reel · 20s"
+      - platform     e.g. "Instagram + LinkedIn", "LinkedIn"
+      - scheduledAt  ISO datetime "2026-09-01T09:00:00"
+      - hook         headline shown on the card (REMOVE the [PLACEHOLDER] marker)
+      - caption      full caption text (hashtags auto-highlighted)
+      - mediaType    "image" (option chooser + lightbox),
+                     "text"  (LinkedIn draft block, needs draftText, no images),
+                     "video" (poster image + note, posterUrl required),
+                     "quote" (like image, but ALSO needs quote + source — the
+                              verbatim-quote rule note renders automatically)
+      - aspectRatio  "4:5" | "1:1" | "9:16"
+      - imageUrls    array of option image URLs (Drive thumbnails or CDN);
+                     null for "text"; for "video" use posterUrl instead
+      - quote/source (quote cards only) Daniel's VERBATIM words + where from.
+                     HARD RULE: never paraphrase, never invent. If it is not
+                     a direct quote from Daniel with a source, it does not go
+                     on a quote card.
+   2. Update the placeholder flag: set "placeholder": false (or delete the
+      field) on real posts — the orange PLACEHOLDER pill disappears.
+   3. Update the metaline post count in the header if the total changes
+      (it self-corrects in the sticky bar, the header line is static text).
+   ===================================================================== */
+const POSTS = [
+  {
+    id: 101, section: "feed", format: "Portrait 4:5", platform: "Instagram + LinkedIn",
+    scheduledAt: "2026-09-01T09:00:00", placeholder: true,
+    hook: "[PLACEHOLDER — replace with this week's real post] Most consultants sell hours. Daniel sells outcomes.",
+    caption: "[PLACEHOLDER — replace with this week's real post]\n\nDraft caption goes here — British idiom, direct, no fluff. Ends with one clear CTA to the NavAIgate Skool community.\n\n#AI #Consulting #NavAIgate",
+    mediaType: "image", aspectRatio: "4:5",
+    imageUrls: [
+      "https://placehold.co/1080x1350/1B4332/F3EEE7?text=Option+1",
+      "https://placehold.co/1080x1350/2D6A4F/F3EEE7?text=Option+2",
+      "https://placehold.co/1080x1350/52B788/14321f?text=Option+3"
+    ]
+  },
+  {
+    id: 102, section: "feed", format: "Feed 1:1", platform: "Instagram + LinkedIn",
+    scheduledAt: "2026-09-03T09:00:00", placeholder: true,
+    hook: "[PLACEHOLDER — replace with this week's real post] The 3-tool AI stack that runs Daniel's back office.",
+    caption: "[PLACEHOLDER — replace with this week's real post]\n\nDraft caption goes here — concrete, technical, zero hype. One CTA.\n\n#AI #Automation #NavAIgate",
+    mediaType: "image", aspectRatio: "1:1",
+    imageUrls: [
+      "https://placehold.co/1080x1080/1B4332/F3EEE7?text=Option+1",
+      "https://placehold.co/1080x1080/2D6A4F/F3EEE7?text=Option+2",
+      "https://placehold.co/1080x1080/52B788/14321f?text=Option+3"
+    ]
+  },
+  {
+    id: 103, section: "feed", format: "LinkedIn text post", platform: "LinkedIn",
+    scheduledAt: "2026-09-04T08:30:00", placeholder: true,
+    hook: "[PLACEHOLDER — replace with this week's real post] Text-only LinkedIn post — draft below.",
+    caption: "No image on this one — LinkedIn text posts routinely outperform image posts for personal brands. The draft is shown in full above; approve it or request changes.",
+    mediaType: "text", aspectRatio: null, imageUrls: null,
+    draftText: "[PLACEHOLDER — replace with this week's real post]\n\nDraft LinkedIn post text goes here, formatted exactly as it will publish:\n\nShort punchy opening line.\n\nOne idea per line.\n\nA concrete example with a number in it.\n\nA one-line close, and a question to the reader."
+  },
+  {
+    id: 104, section: "feed", format: "Reel · 20s", platform: "Instagram + LinkedIn",
+    scheduledAt: "2026-09-05T12:00:00", placeholder: true,
+    hook: "[PLACEHOLDER — replace with this week's real post] Reel slot — talking-head clip, subtitled.",
+    caption: "[PLACEHOLDER — replace with this week's real post]\n\nReel caption draft goes here. The poster frame below is a stand-in — the finished cut will be linked or embedded here for review.",
+    mediaType: "video", aspectRatio: "9:16",
+    posterUrl: "https://placehold.co/1080x1920/14321f/95B39C?text=Reel+placeholder+poster",
+    imageUrls: null
+  },
+  {
+    id: 201, section: "quotes", format: "Quote card 1:1", platform: "Instagram + LinkedIn",
+    scheduledAt: "2026-09-02T17:00:00", placeholder: true,
+    hook: "[PLACEHOLDER — replace with this week's real post] Quote card — verbatim, sourced.",
+    caption: "[PLACEHOLDER — replace with this week's real post]\n\nCaption draft for the quote card goes here.\n\n#LinkedIn #NavAIgate",
+    mediaType: "quote", aspectRatio: "1:1",
+    quote: "One decent LinkedIn post will out-earn a hundred cold emails.",
+    source: "Daniel, LinkedIn Growth Engine, Lesson 1",
+    imageUrls: [
+      "https://placehold.co/1080x1080/1B4332/F3EEE7?text=Quote+card+·+Option+1",
+      "https://placehold.co/1080x1080/2D6A4F/F3EEE7?text=Quote+card+·+Option+2",
+      "https://placehold.co/1080x1080/F3EEE7/1B4332?text=Quote+card+·+Option+3"
+    ]
+  },
+  {
+    id: 202, section: "quotes", format: "Quote card 4:5", platform: "Instagram + LinkedIn",
+    scheduledAt: "2026-09-06T10:00:00", placeholder: true,
+    hook: "[PLACEHOLDER — replace with this week's real post] Quote card — verbatim, sourced.",
+    caption: "[PLACEHOLDER — replace with this week's real post]\n\nCaption draft for the quote card goes here.\n\n#ClaudeCode #NavAIgate",
+    mediaType: "quote", aspectRatio: "4:5",
+    quote: "The chat is a conversation. Claude Code is delegation. That's the whole shift.",
+    source: "Daniel, Claude Code course, Lesson 1",
+    imageUrls: [
+      "https://placehold.co/1080x1350/14321f/F3EEE7?text=Quote+card+·+Option+1",
+      "https://placehold.co/1080x1350/2D6A4F/F3EEE7?text=Quote+card+·+Option+2",
+      "https://placehold.co/1080x1350/F3EEE7/2D6A4F?text=Quote+card+·+Option+3"
+    ]
+  }
+];
+/* Spare verified quote for a third card if needed (verbatim, sourced):
+   "Stop trying to 'go viral' and start writing like a person with an opinion.
+    Be the person. The rest is mechanics."
+    — Daniel, LinkedIn Growth Engine, Lesson 1 */
+
+const SECTIONS = [
+  { key: "feed",   navId: "sec-feed",   title: "This week — feed posts" },
+  { key: "quotes", navId: "sec-quotes", title: "This week — quote cards & stories" }
+];
+
+/* ---------- state (localStorage, fully guarded) ---------- */
+let STATE = {};
+try { STATE = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; } catch (e) { STATE = {}; }
+if (typeof STATE !== "object" || STATE === null) STATE = {};
+if (typeof STATE.posts !== "object" || STATE.posts === null) STATE.posts = {};
+function save(){ try { localStorage.setItem(STORAGE_KEY, JSON.stringify(STATE)); } catch (e) {} }
+function st(id){ return STATE.posts[id] || (STATE.posts[id] = { choice: null, decision: null, comment: "" }); }
+
+/* ---------- helpers ---------- */
+const WD = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+const MO = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+function fmtDate(iso){
+  const d = new Date(iso.replace(" ", "T"));
+  const hh = String(d.getHours()).padStart(2,"0"), mm = String(d.getMinutes()).padStart(2,"0");
+  return `${WD[d.getDay()]} ${d.getDate()} ${MO[d.getMonth()]} · ${hh}:${mm}`;
+}
+function arClass(ar){ return ar === "1:1" ? "ar-11" : ar === "9:16" ? "ar-916" : "ar-45"; }
+function esc(s){ return (s || "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+function captionHtml(cap){ return esc(cap).replace(/(#[A-Za-z0-9_]+)/g, '<span class="tags">$1</span>'); }
+
+/* ---------- render ---------- */
+const feed = document.getElementById("feed");
+const sortByDate = (a,b) => a.scheduledAt.localeCompare(b.scheduledAt);
+const ALL = [];
+
+SECTIONS.forEach(sec => {
+  const posts = POSTS.filter(p => p.section === sec.key).sort(sortByDate);
+  if (!posts.length) return;
+  const h = document.createElement("div");
+  h.className = "section-h"; h.id = sec.navId;
+  h.innerHTML = `<h2>${esc(sec.title)}</h2><div class="rule"></div>`;
+  feed.appendChild(h);
+  posts.forEach(p => { ALL.push(p); feed.appendChild(buildCard(p)); });
+});
+
+function optHtml(p, url, i, selected){
+  return `
+  <div class="opt ${arClass(p.aspectRatio)} ${selected ? "sel" : ""}" data-choice="${i}">
+    <button class="zoomable" type="button" data-zoom="${i}" aria-label="Zoom option ${i+1} of ${esc(p.hook)}">
+      <span class="tag">Option ${i+1}</span>
+      <img loading="lazy" src="${esc(url)}" alt="Option ${i+1} — ${esc(p.hook)}" />
+      <span class="maglens" aria-hidden="true">⤢</span>
+    </button>
+    <button class="pick" type="button" data-pick="${i}" aria-pressed="${selected ? "true" : "false"}">
+      <span class="dot" aria-hidden="true"></span>Choose this one
+    </button>
+  </div>`;
+}
+
+function buildCard(p){
+  const s = st(p.id);
+  const card = document.createElement("section");
+  card.className = "card"; card.id = "post-" + p.id;
+
+  let media = "";
+  if (p.mediaType === "text"){
+    media = `<div class="opts-label">LinkedIn draft · full text</div>
+             <div class="textpost">${esc(p.draftText)}</div>`;
+  } else if (p.mediaType === "video"){
+    media = `<div class="opts-label">Reel · placeholder poster (finished cut will appear here)</div>
+             <div class="opt ${arClass(p.aspectRatio)} single">
+               <button class="zoomable" type="button" data-zoom="0" aria-label="Zoom reel poster">
+                 <span class="tag">Poster</span>
+                 <img loading="lazy" src="${esc(p.posterUrl)}" alt="Reel poster — ${esc(p.hook)}" />
+                 <span class="maglens" aria-hidden="true">⤢</span>
+               </button>
+             </div>
+             <p class="zoomhint">Tap the image to view full-screen.</p>`;
+  } else {
+    const opts = p.imageUrls.map((u,i) => optHtml(p, u, i, s.choice === i)).join("");
+    media = `<div class="opts-label">Pick your preferred version · ${p.imageUrls.length} options</div>
+             <div class="opts three">${opts}</div>
+             <p class="zoomhint">Tap any image to view it full-screen — swipe or use ← → to compare options.</p>`;
+  }
+
+  let quoteBlock = "";
+  if (p.mediaType === "quote"){
+    quoteBlock = `
+      <div class="quoteblock">
+        <p class="q">“${esc(p.quote)}”</p>
+        <span class="src">— ${esc(p.source)}</span>
+      </div>`;
+  }
+  const ruleNote = p.mediaType === "quote" ? `
+      <div class="rulenote"><span class="ic">✓</span>
+        <span><b>House rule:</b> quote cards only ever carry Daniel's <b>verbatim</b> words, with the source shown. Nothing paraphrased, nothing invented — if Daniel didn't say it, it doesn't go on a card.</span>
+      </div>` : "";
+
+  card.innerHTML = `
+    <div class="card-head">
+      <div class="badges">
+        <span class="badge date">${fmtDate(p.scheduledAt)}</span>
+        <span class="badge plat">${esc(p.format)}</span>
+      </div>
+      <span class="pin">${esc(p.platform)}</span>
+    </div>
+    ${p.placeholder ? '<span class="placeholder-flag">Placeholder — real post lands here</span>' : ""}
+    <h3 class="hook">${esc(p.hook)}</h3>
+    <div class="card-body">
+      ${quoteBlock}
+      ${media}
+      ${ruleNote}
+      <div class="caption"><div class="cap-lab">Caption</div><div class="cap-text">${captionHtml(p.caption)}</div></div>
+      <div class="controls">
+        <div class="seg" role="group" aria-label="Decision for this post">
+          <button type="button" data-dec="approve" class="${s.decision === "approve" ? "on-ok" : ""}">Approve ✓</button>
+          <button type="button" data-dec="changes" class="${s.decision === "changes" ? "on-warn" : ""}">Request changes</button>
+        </div>
+        <button type="button" class="commenttoggle" data-toggle>${s.comment ? "Edit comment ✎" : "Add a comment"}</button>
+      </div>
+      <textarea class="${s.comment ? "" : "hidden"}" placeholder="Your comment for Celine (optional)…" aria-label="Comment for this post">${esc(s.comment)}</textarea>
+    </div>`;
+
+  // Zoom → lightbox
+  card.querySelectorAll("[data-zoom]").forEach(el => {
+    el.addEventListener("click", () => openLightbox(p, Number(el.dataset.zoom)));
+  });
+  // Pick an option
+  card.querySelectorAll("[data-pick]").forEach(el => {
+    el.addEventListener("click", () => selectOption(p, Number(el.dataset.pick)));
+  });
+  // Decision segment
+  const segBtns = card.querySelectorAll(".seg button");
+  segBtns.forEach(b => b.addEventListener("click", () => {
+    s.decision = (s.decision === b.dataset.dec) ? null : b.dataset.dec;
+    segBtns.forEach(x => x.classList.remove("on-ok","on-warn"));
+    if (s.decision === "approve") card.querySelector("[data-dec=approve]").classList.add("on-ok");
+    if (s.decision === "changes") card.querySelector("[data-dec=changes]").classList.add("on-warn");
+    card.classList.toggle("is-approved", s.decision === "approve");
+    card.classList.toggle("is-changes", s.decision === "changes");
+    save(); refreshProgress();
+  }));
+  // Comment
+  const ta = card.querySelector("textarea");
+  card.querySelector("[data-toggle]").addEventListener("click", () => {
+    ta.classList.toggle("hidden");
+    if (!ta.classList.contains("hidden")) ta.focus();
+  });
+  ta.addEventListener("input", () => { s.comment = ta.value; save(); });
+
+  card.classList.toggle("is-approved", s.decision === "approve");
+  card.classList.toggle("is-changes", s.decision === "changes");
+  return card;
+}
+
+function selectOption(p, i){
+  const s = st(p.id);
+  s.choice = i; save();
+  const card = document.getElementById("post-" + p.id);
+  if (!card) return;
+  card.querySelectorAll(".opt[data-choice]").forEach(o => {
+    const on = Number(o.dataset.choice) === i;
+    o.classList.toggle("sel", on);
+    const pk = o.querySelector("[data-pick]");
+    if (pk) pk.setAttribute("aria-pressed", on ? "true" : "false");
+  });
+}
+
+/* ---------- progress ---------- */
+const totalN = document.getElementById("totalN"), doneN = document.getElementById("doneN"),
+      barfill = document.getElementById("barfill"), metaCount = document.getElementById("metaCount");
+totalN.textContent = ALL.length; metaCount.textContent = ALL.length;
+function refreshProgress(){
+  const done = ALL.filter(p => st(p.id).decision).length;
+  doneN.textContent = done;
+  barfill.style.width = (ALL.length ? done / ALL.length * 100 : 0) + "%";
+}
+refreshProgress();
+
+/* ---------- jump-nav active highlight ---------- */
+const navLinks = Array.from(document.querySelectorAll("#jumpnav a"));
+const navTargets = navLinks.map(a => document.getElementById(a.getAttribute("href").slice(1))).filter(Boolean);
+function refreshNav(){
+  const fromTop = window.scrollY + 140;
+  let active = navTargets[0];
+  navTargets.forEach(t => { if (t.offsetTop <= fromTop) active = t; });
+  navLinks.forEach(a => a.classList.toggle("active", active && a.getAttribute("href") === "#" + active.id));
+}
+window.addEventListener("scroll", refreshNav, { passive: true });
+window.addEventListener("resize", refreshNav);
+refreshNav();
+
+/* ---------- lightbox ---------- */
+const lb = document.getElementById("lightbox"), lbImg = document.getElementById("lbImg"),
+      lbMeta = document.getElementById("lbMeta"), lbPrev = document.getElementById("lbPrev"),
+      lbNext = document.getElementById("lbNext"), lbClose = document.getElementById("lbClose"),
+      lbChoose = document.getElementById("lbChoose"), lbStage = document.getElementById("lbStage");
+let lbPost = null, lbIndex = 0, lbReturnFocus = null;
+
+function lbImages(p){
+  if (p.mediaType === "video") return [p.posterUrl];
+  return p.imageUrls || [];
+}
+function openLightbox(p, i){
+  lbPost = p; lbIndex = i;
+  lbReturnFocus = document.activeElement;
+  lb.hidden = false;
+  document.body.style.overflow = "hidden";
+  renderLightbox();
+  lbClose.focus();
+}
+function renderLightbox(){
+  if (!lbPost) return;
+  const imgs = lbImages(lbPost);
+  const multi = imgs.length > 1;
+  const label = lbPost.mediaType === "video" ? "Reel poster" : `Option ${lbIndex + 1} of ${imgs.length}`;
+  lbImg.src = imgs[lbIndex];
+  lbImg.alt = `${label} — ${lbPost.hook}`;
+  lbMeta.innerHTML = `<b>${esc(label)}</b> · ${esc(lbPost.hook)}`;
+  lbPrev.hidden = !multi; lbNext.hidden = !multi;
+  const choosable = lbPost.mediaType === "image" || lbPost.mediaType === "quote";
+  lbChoose.hidden = !choosable;
+  if (choosable){
+    const chosen = st(lbPost.id).choice === lbIndex;
+    lbChoose.textContent = chosen ? "Chosen ✓ — this is your pick" : "Choose this option ✓";
+  }
+}
+function lbStep(d){
+  if (!lbPost) return;
+  const imgs = lbImages(lbPost);
+  if (imgs.length < 2) return;
+  lbIndex = (lbIndex + d + imgs.length) % imgs.length;
+  renderLightbox();
+}
+function closeLightbox(){
+  lb.hidden = true; lbPost = null;
+  document.body.style.overflow = "";
+  lbImg.src = "";
+  if (lbReturnFocus && typeof lbReturnFocus.focus === "function") lbReturnFocus.focus();
+  lbReturnFocus = null;
+}
+lbClose.addEventListener("click", closeLightbox);
+lbPrev.addEventListener("click", () => lbStep(-1));
+lbNext.addEventListener("click", () => lbStep(1));
+lbChoose.addEventListener("click", () => { if (lbPost){ selectOption(lbPost, lbIndex); renderLightbox(); } });
+lb.addEventListener("click", e => { if (e.target === lb || e.target === lbStage) closeLightbox(); });
+document.addEventListener("keydown", e => {
+  if (lb.hidden) return;
+  if (e.key === "Escape") closeLightbox();
+  else if (e.key === "ArrowLeft") lbStep(-1);
+  else if (e.key === "ArrowRight") lbStep(1);
+});
+// Touch swipe between options
+let touchX = null, touchY = null;
+lb.addEventListener("touchstart", e => {
+  if (e.touches.length === 1){ touchX = e.touches[0].clientX; touchY = e.touches[0].clientY; }
+}, { passive: true });
+lb.addEventListener("touchend", e => {
+  if (touchX == null) return;
+  const dx = e.changedTouches[0].clientX - touchX, dy = e.changedTouches[0].clientY - touchY;
+  if (Math.abs(dx) > 48 && Math.abs(dx) > Math.abs(dy)) lbStep(dx < 0 ? 1 : -1);
+  touchX = touchY = null;
+}, { passive: true });
+
+/* ---------- summary + honest send/receipt flow ---------- */
+function buildSummary(){
+  const lines = [];
+  lines.push("DANIEL WRIGHT — NAVAIGATE · Weekly content review");
+  lines.push("Feedback to C-Lion (support@c-lion.ai)");
+  lines.push("================================================\n");
+  ALL.forEach(p => {
+    const s = st(p.id);
+    const dec = s.decision === "approve" ? "APPROVED ✓" : s.decision === "changes" ? "CHANGES REQUESTED ✎" : "— not reviewed —";
+    lines.push(`${fmtDate(p.scheduledAt)} · ${p.format} · ${p.platform}`);
+    lines.push(`  ${p.hook}`);
+    lines.push(`  Status: ${dec}`);
+    if (p.mediaType === "image" || p.mediaType === "quote"){
+      lines.push(s.choice != null ? `  Chosen version: Option ${s.choice + 1}` : "  Chosen version: (none picked)");
+    } else if (p.mediaType === "text"){
+      lines.push("  LinkedIn text post (no image)");
+    } else if (p.mediaType === "video"){
+      lines.push("  Reel slot (poster placeholder)");
+    }
+    if (s.comment && s.comment.trim()) lines.push(`  Comment: ${s.comment.trim()}`);
+    lines.push("");
+  });
+  const open = ALL.filter(p => !st(p.id).decision).length;
+  lines.push(`Summary: ${ALL.length - open}/${ALL.length} reviewed, ${open} still open.`);
+  return lines.join("\n");
+}
+
+const toast = document.getElementById("toast");
+function showToast(m){ toast.textContent = m; toast.classList.add("show"); setTimeout(() => toast.classList.remove("show"), 6000); }
+
+const receipt = document.getElementById("receipt");
+function fmtStamp(ms){
+  const d = new Date(ms);
+  return `${WD[d.getDay()]} ${d.getDate()} ${MO[d.getMonth()]} ${d.getFullYear()}, ${String(d.getHours()).padStart(2,"0")}:${String(d.getMinutes()).padStart(2,"0")}`;
+}
+function renderReceipt(){
+  if (!STATE.packagedAt){ receipt.hidden = true; return; }
+  const how = STATE.packagedVia === "copy"
+    ? "The summary is on your clipboard — paste it into an email or WhatsApp and send it."
+    : "Your email app opened with the summary pre-filled — hit send there. (If no app opened, use “Copy summary” instead.)";
+  receipt.hidden = false;
+  receipt.innerHTML =
+    `<b>Feedback packaged on ${esc(fmtStamp(STATE.packagedAt))}.</b> ${esc(how)}<br><br>` +
+    `Celine personally confirms receipt within <b>24h</b>. If you don't hear back, it did <b>NOT</b> arrive — WhatsApp me or resend. ` +
+    `No silent black holes: packaged is not the same as received, and only my confirmation counts.`;
+}
+function markPackaged(via){
+  STATE.packagedAt = Date.now();
+  STATE.packagedVia = via;
+  save(); renderReceipt();
+}
+renderReceipt();
+
+document.getElementById("copyBtn").addEventListener("click", async () => {
+  const txt = buildSummary();
+  let ok = false;
+  try { await navigator.clipboard.writeText(txt); ok = true; }
+  catch (e) {
+    const t = document.createElement("textarea");
+    t.value = txt; document.body.appendChild(t); t.select();
+    try { ok = document.execCommand("copy"); } catch (_) { ok = false; }
+    t.remove();
+  }
+  if (ok){ showToast("Summary copied — now paste it into an email or WhatsApp and send it."); markPackaged("copy"); }
+  else { showToast("Couldn't copy automatically — please select the text manually."); }
+});
+
+document.getElementById("sendMail").addEventListener("click", () => {
+  const url = `mailto:${CLION_EMAIL}?subject=${encodeURIComponent("Daniel Wright — NavAIgate · weekly content review")}&body=${encodeURIComponent(buildSummary())}`;
+  window.location.href = url;
+  showToast("Your email app opened with the summary — hit send there. If nothing opened, use “Copy summary”.");
+  markPackaged("mail");
+});
+
+document.getElementById("resetBtn").addEventListener("click", () => {
+  if (confirm("Reset all picks, decisions and comments on this page?")){
+    STATE = { posts: {} }; save(); location.reload();
+  }
+});
+</script>
+</body>
+</html>
